@@ -3,9 +3,8 @@ This repository contains my solutions to problems on LeetCode. Each solution is 
 
 ## Structure
 
-- `Easy/`: Contains solutions to easy problems.
-- `Medium/`: Contains solutions to medium problems.
-- `Hard/`: Contains solutions to hard problems.
+- `Contest/`: Contains solutions to problems of weekly contest.
+- `DailyChallenges/`: Contains solutions to daily challenge problems.
 
 ---
 
