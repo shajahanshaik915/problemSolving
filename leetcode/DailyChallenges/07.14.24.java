@@ -1,54 +1,50 @@
-import java.util.*;
-
 class Solution {
     public String countOfAtoms(String formula) {
-        Stack<Map<String, Integer>> stack = new Stack<>();
+        Stack<Map<String,Integer>> stack=new Stack<>();
+        int index=0;
         stack.push(new HashMap<>());
-        int index = 0;
-
-        while (index < formula.length()) {
-            if (formula.charAt(index) == '(') {
+        while(index<formula.length()){            
+            if(formula.charAt(index)=='('){
                 stack.push(new HashMap<>());
                 index++;
-            } else if (formula.charAt(index) == ')') {
-                Map<String, Integer> top = stack.pop();
+            }
+            else if(formula.charAt(index)==')'){
+                StringBuilder sb=new StringBuilder();
                 index++;
-                StringBuilder sb = new StringBuilder();
-                while (index < formula.length() && Character.isDigit(formula.charAt(index))) {
+                while(index<formula.length()&&Character.isDigit(formula.charAt(index))){
                     sb.append(formula.charAt(index));
                     index++;
                 }
-                int multiplier = sb.length() > 0 ? Integer.parseInt(sb.toString()) : 1;
-                for (String key : top.keySet()) {
-                    top.put(key, top.get(key) * multiplier);
+                int multiply=sb.length()==0?1:Integer.parseInt(sb.toString());
+                Map<String,Integer> m=stack.pop();
+                if(stack.isEmpty()) stack.push(new HashMap<>());
+                for(String str:m.keySet()){
+                    stack.peek().put(str,stack.peek().getOrDefault(str,0)+(m.get(str)*multiply));
                 }
-                for (String key : top.keySet()) {
-                    stack.peek().put(key, stack.peek().getOrDefault(key, 0) + top.get(key));
+            }
+            else{
+                String atom="";
+                atom+=formula.charAt(index);
+                index++;
+                while(index<formula.length()&&Character.isLowerCase(formula.charAt(index))){
+                    atom+=formula.charAt(index);
+                    index++;
                 }
-            } else {
-                StringBuilder atom = new StringBuilder();
-                atom.append(formula.charAt(index++));
-                while (index < formula.length() && Character.isLowerCase(formula.charAt(index))) {
-                    atom.append(formula.charAt(index++));
+                String number="";
+                while(index<formula.length()&&Character.isDigit(formula.charAt(index))){
+                    number+=formula.charAt(index);
+                    index++;
                 }
-                StringBuilder sb = new StringBuilder();
-                while (index < formula.length() && Character.isDigit(formula.charAt(index))) {
-                    sb.append(formula.charAt(index++));
-                }
-                int count = sb.length() > 0 ? Integer.parseInt(sb.toString()) : 1;
-                stack.peek().put(atom.toString(), stack.peek().getOrDefault(atom.toString(), 0) + count);
+                int multiply=number.length()>0?Integer.parseInt(number):1;
+                stack.peek().put(atom,stack.peek().getOrDefault(atom,0)+multiply);
             }
         }
-
-        TreeMap<String, Integer> result = new TreeMap<>(stack.peek());
-        StringBuilder output = new StringBuilder();
-        for (String atom : result.keySet()) {
-            output.append(atom);
-            if (result.get(atom) > 1) {
-                output.append(result.get(atom));
-            }
+        TreeMap<String,Integer> tm=new TreeMap<>(stack.peek());
+        String ans="";
+        for(String str:tm.keySet()){
+            ans+=str;
+            if(tm.get(str)>1) ans+=tm.get(str);
         }
-
-        return output.toString();
+        return ans;
     }
 }
