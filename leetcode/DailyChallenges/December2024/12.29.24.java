@@ -1,50 +1,55 @@
 class Solution {
-    public int[] maxSumOfThreeSubarrays(int[] nums, int k) {
-        int[] W = new int[nums.length-k+1];
+    public int mod = 1000000007;
 
-        int sum = 0;
-        for (int i = 0; i < k; i++) {
-            sum += nums[i];
-        }
-        W[0] = sum;
-        for (int i = k; i < nums.length; i++) {
-            sum += nums[i]-nums[i-k];
-            W[i-k+1] = sum;
-        }
+    public int numWays(String[] words, String target) {
+        int m = target.length();
+        int n = words[0].length();
 
-        int[] leftBest = new int[nums.length-k+1];
-        int best = 0;
-        for (int i = 0; i < leftBest.length; i++) {
-            if (W[i] > W[best]) {
-                best = i;
-            }
-            leftBest[i] = best;
-        }
-
-        int[] rightBest = new int[nums.length-k+1];
-        best = W.length-1;
-        for (int i = rightBest.length-1; i >= 0; i--) {
-            if (W[i] >= W[best]) {
-                best = i;
-            }
-            rightBest[i] = best;
-        }
-
-        // System.out.println(Arrays.toString(leftBest));
-        // System.out.println(Arrays.toString(rightBest));
-
-        int[] ret = new int[]{0, k, k+k};
-        for (int i = k; i < W.length-k; i++) {
-            if (W[i] + W[leftBest[i-k]] + W[rightBest[i+k]] > W[ret[0]] + W[ret[1]] + W[ret[2]]) {
-                ret[0] = leftBest[i-k];
-                ret[1] = i;
-                ret[2] = rightBest[i+k];
+        
+        int[][] freq = new int[26][n];
+        for (String word : words) {
+            for (int j = 0; j < word.length(); j++) {
+                freq[word.charAt(j) - 'a'][j]++;
             }
         }
 
-        // System.out.println(Arrays.toString(ret));
+        
+        Integer[][] dp = new Integer[m][n];
 
+        return helper(words, target, 0, 0, dp, freq);
+    }
 
-        return ret;
+    public int helper(String[] words, String target, int ti, int start, Integer[][] dp, int[][] freq) {
+        
+        if (ti == target.length()) {
+            return 1;
+        }
+        
+        
+        if (start == words[0].length()) {
+            return 0;
+        }
+
+        
+        if (dp[ti][start] != null) {
+            return dp[ti][start];
+        }
+
+        long count = 0;
+
+        
+        count += helper(words, target, ti, start + 1, dp, freq);
+
+        
+        char c = target.charAt(ti);
+        if (freq[c - 'a'][start] > 0) {
+            count += (long) freq[c - 'a'][start] * helper(words, target, ti + 1, start + 1, dp, freq);
+            count %= mod;
+        }
+
+       
+        dp[ti][start] = (int) (count % mod);
+
+        return dp[ti][start];
     }
 }
