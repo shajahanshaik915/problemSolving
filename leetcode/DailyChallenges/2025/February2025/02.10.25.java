@@ -1,15 +1,16 @@
 class Solution {
-    public String removeOccurrences(String str, String part) {
-        StringBuilder sb = new StringBuilder();
-		char[] k = str.toCharArray();
-		for (Character a : k) {
-			sb.append(a);
-			if (sb.length() >= part.length() && sb.substring(sb.length() - part.length()).equals(part)) {
-				sb.replace(sb.length() - part.length(), sb.length(), "");
-	}
-		}
-		return sb.substring(0);
-
-        
+    public String clearDigits(String s) {
+        Stack<Character> stack=new Stack<>();
+        for(char ch:s.toCharArray()){
+            if(Character.isDigit(ch)){
+                if(stack.size()>0) stack.pop();
+            }
+            else stack.push(ch);
+        }
+        StringBuilder sb=new StringBuilder();
+        while(stack.size()>0){
+            sb.append(stack.pop());
+        }
+        return sb.reverse().toString();
     }
 }
